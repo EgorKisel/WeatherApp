@@ -7,4 +7,7 @@
     <dimen name="recycler_item_text_size">25sp</dimen>
     <dimen name="recycler_item_line_height">1dp</dimen>
     <dimen name="recycler_item_padding">10dp</dimen>
+    <dimen name="margin_base">20dp</dimen>
+    <dimen name="margin_card_view">10dp</dimen>
+    <dimen name="radius_card_view">10dp</dimen>
 </resources>
