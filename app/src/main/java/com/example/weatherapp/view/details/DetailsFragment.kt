@@ -7,12 +7,10 @@ import android.view.ViewGroup
 import androidx.fragment.app.Fragment
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.example.weatherapp.R
-import com.example.weatherapp.databinding.FragmentDetailsBinding
 import com.example.weatherapp.databinding.NewFragmentDetailsBinding
 import com.example.weatherapp.repository.Weather
 import com.example.weatherapp.utils.KEY_BUNDLE_WEATHER
 import com.example.weatherapp.viewmodel.MainViewModel
-import com.google.android.material.snackbar.Snackbar
 import java.text.SimpleDateFormat
 
 class DetailsFragment : Fragment() {
@@ -34,7 +32,8 @@ class DetailsFragment : Fragment() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         val weather: Weather = requireArguments().getParcelable(KEY_BUNDLE_WEATHER)!!
-        val layoutManager = LinearLayoutManager(requireContext(), LinearLayoutManager.HORIZONTAL, false)
+        val layoutManager =
+            LinearLayoutManager(requireContext(), LinearLayoutManager.HORIZONTAL, false)
 
         binding.listHour.adapter = adapterHour
         binding.listWeek.adapter = adapterWeek
@@ -44,16 +43,14 @@ class DetailsFragment : Fragment() {
     }
 
     private fun renderData(weather: Weather) {
-//        binding.temperatureValue.text = weather.temperature.toString()
-//        binding.feelsLikeValue.text = weather.feelsLike.toString()
-        //        binding.cityCoordinates.text = "${weather.city.lat} ${weather.city.lon}"
-//        Snackbar.make(binding.mainView, "WORKING", Snackbar.LENGTH_LONG).show()
         binding.cityName.text = weather.city.name
-        binding.dataText.text = SimpleDateFormat(getString(R.string.time_format)).format(weather.time)
+        binding.dataText.text =
+            SimpleDateFormat(getString(R.string.time_format)).format(weather.time)
         binding.weatherIcon.background = resources.getDrawable(R.drawable.sun)
         binding.weatherText.text = weather.temperature.toString()
         binding.conditionText.text = weather.condition
-        binding.feelsLikeText.text = resources.getString(R.string.feelsLike) + " " + weather.feelsLike.toString()
+        binding.feelsLikeText.text =
+            resources.getString(R.string.feelsLike) + " " + weather.feelsLike.toString()
         adapterHour.setWeatherData(weather.forecastList[0].hours)
         adapterWeek.setForecastData(weather.forecastList)
     }
