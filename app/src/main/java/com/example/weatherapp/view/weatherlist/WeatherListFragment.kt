@@ -12,10 +12,11 @@ import com.example.weatherapp.R
 import com.example.weatherapp.databinding.FragmentWeatherListBinding
 import com.example.weatherapp.repository.Weather
 import com.example.weatherapp.utils.KEY_BUNDLE_WEATHER
+import com.example.weatherapp.utils.showSnackBar
 import com.example.weatherapp.view.details.DetailsFragment
 import com.example.weatherapp.viewmodel.AppState
 import com.example.weatherapp.viewmodel.MainViewModel
-import com.google.android.material.snackbar.Snackbar
+import kotlinx.android.synthetic.main.fragment_details.*
 
 class WeatherListFragment : Fragment(), OnItemListClickListener {
 
@@ -23,6 +24,9 @@ class WeatherListFragment : Fragment(), OnItemListClickListener {
     private val binding: FragmentWeatherListBinding get() = _binding!!
     private val adapter = WeatherListAdapter(this)
     private var isRussian = true
+    private val viewModel: MainViewModel by lazy {
+        ViewModelProvider(this)[MainViewModel::class.java]
+    }
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
@@ -34,34 +38,35 @@ class WeatherListFragment : Fragment(), OnItemListClickListener {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-        val viewModel = ViewModelProvider(this).get(MainViewModel::class.java)
-        val observer = object : Observer<AppState> {
-            override fun onChanged(data: AppState) {
-                renderData(data)
-            }
-        }
+        val observer = Observer<AppState> { data -> renderData(data) }
         binding.recyclerView.adapter = adapter
-        viewModel.getData().observe(viewLifecycleOwner, observer)
-        viewModel.getWeatherRussia()
+        viewModel.apply {
+            getData().observe(viewLifecycleOwner, observer)
+            getWeatherRussia()
+        }
         binding.floatingActionButton.setOnClickListener {
-            isRussian = !isRussian
-            if (isRussian) {
-                viewModel.getWeatherRussia()
-                binding.floatingActionButton.setImageDrawable(
-                    ContextCompat.getDrawable(
-                        requireContext(),
-                        R.drawable.ic_russia
-                    )
+            changeWeatherData()
+        }
+    }
+
+    private fun changeWeatherData() {
+        isRussian = !isRussian
+        if (isRussian) {
+            viewModel.getWeatherRussia()
+            binding.floatingActionButton.setImageDrawable(
+                ContextCompat.getDrawable(
+                    requireContext(),
+                    R.drawable.ic_russia
                 )
-            } else {
-                viewModel.getWeatherWorld()
-                binding.floatingActionButton.setImageDrawable(
-                    ContextCompat.getDrawable(
-                        requireContext(),
-                        R.drawable.ic_earth
-                    )
+            )
+        } else {
+            viewModel.getWeatherWorld()
+            binding.floatingActionButton.setImageDrawable(
+                ContextCompat.getDrawable(
+                    requireContext(),
+                    R.drawable.ic_earth
                 )
-            }
+            )
         }
     }
 
@@ -69,8 +74,7 @@ class WeatherListFragment : Fragment(), OnItemListClickListener {
         when (data) {
             is AppState.Error -> {
                 binding.loadingLayout.visibility = View.GONE
-                Snackbar.make(binding.root, "NOT WORKING ${data.error}", Snackbar.LENGTH_LONG)
-                    .show()
+                loadingLayout.showSnackBar("NOT WORKING")
             }
             is AppState.Loading -> {
                 binding.loadingLayout.visibility = View.VISIBLE

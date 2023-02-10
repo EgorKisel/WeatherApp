@@ -1,13 +1,12 @@
 <resources>
     <string name="app_name">WeatherApp</string>
-    <!-- TODO: Remove or change this placeholder text -->
     <string name="hello_blank_fragment">Hello blank fragment</string>
 
-    <string name="temperature_label">Температура</string>
-    <string name="feels_like_label">Ощущается как</string>
+    <string name="temperature_label">Temperature</string>
+    <string name="feels_like_label">feels like</string>
     <string name="city_coordinates">lt/ln: %s, %s"</string>
     <string name="error">Error</string>
     <string name="reload">Reload</string>
     <string name="time_format">"E, dd MMMM H:m"</string>
-    <string name="feelsLike">Ощущается как </string>
+    <string name="feelsLike">feels like </string>
 </resources>

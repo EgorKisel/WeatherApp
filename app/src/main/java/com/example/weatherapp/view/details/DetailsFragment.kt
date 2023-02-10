@@ -10,14 +10,12 @@ import com.example.weatherapp.R
 import com.example.weatherapp.databinding.NewFragmentDetailsBinding
 import com.example.weatherapp.repository.Weather
 import com.example.weatherapp.utils.KEY_BUNDLE_WEATHER
-import com.example.weatherapp.viewmodel.MainViewModel
 import java.text.SimpleDateFormat
 
 class DetailsFragment : Fragment() {
 
     private var _binding: NewFragmentDetailsBinding? = null
     private val binding: NewFragmentDetailsBinding get() = _binding!!
-    private lateinit var viewModel: MainViewModel
     private val adapterHour = AdapterHour()
     private val adapterWeek = AdapterWeek()
 
@@ -43,14 +41,16 @@ class DetailsFragment : Fragment() {
     }
 
     private fun renderData(weather: Weather) {
-        binding.cityName.text = weather.city.name
-        binding.dataText.text =
-            SimpleDateFormat(getString(R.string.time_format)).format(weather.time)
-        binding.weatherIcon.background = resources.getDrawable(R.drawable.sun)
-        binding.weatherText.text = weather.temperature.toString()
-        binding.conditionText.text = weather.condition
-        binding.feelsLikeText.text =
-            resources.getString(R.string.feelsLike) + " " + weather.feelsLike.toString()
+        with(binding) {
+            cityName.text = weather.city.name
+            dataText.text =
+                SimpleDateFormat(getString(R.string.time_format)).format(weather.time)
+            weatherIcon.background = resources.getDrawable(R.drawable.sun)
+            weatherText.text = weather.temperature.toString()
+            conditionText.text = weather.condition
+            feelsLikeText.text =
+                resources.getString(R.string.feelsLike) + " " + weather.feelsLike.toString()
+        }
         adapterHour.setWeatherData(weather.forecastList[0].hours)
         adapterWeek.setForecastData(weather.forecastList)
     }
