@@ -5,14 +5,15 @@ import android.view.View
 import android.view.ViewGroup
 import androidx.recyclerview.widget.RecyclerView
 import com.example.weatherapp.databinding.WeekItemBinding
+import com.example.weatherapp.repository.ForecastDTO
 import com.example.weatherapp.repository.Forecasts
 import java.text.SimpleDateFormat
 
 class AdapterWeek: RecyclerView.Adapter<AdapterWeek.HolderWeek>() {
 
-    private var forecastData: List<Forecasts> = listOf()
+    private var forecastData: List<ForecastDTO> = listOf()
 
-    fun setForecastData(forestsDataNew: List<Forecasts>) {
+    fun setForecastData(forestsDataNew: ArrayList<ForecastDTO>) {
         this.forecastData = forestsDataNew
         notifyDataSetChanged()
     }
@@ -29,11 +30,11 @@ class AdapterWeek: RecyclerView.Adapter<AdapterWeek.HolderWeek>() {
     override fun getItemCount() = forecastData.size
 
     class HolderWeek(itemView: View): RecyclerView.ViewHolder(itemView) {
-        fun bind(forecasts: Forecasts) {
+        fun bind(forecasts: ForecastDTO) {
             val binding = WeekItemBinding.bind(itemView)
             binding.weekDay.text = SimpleDateFormat("EEEE").format(forecasts.date)
-            binding.weatherWeekMax.text = forecasts.tempMax.toString() + "/"
-            binding.weatherWeekMin.text = forecasts.tempMin.toString()
+            /*binding.weatherWeekMax.text = forecasts.partsDTO.tempMax.toString() + "/"
+            binding.weatherWeekMin.text = forecasts.partsDTO.tempMin.toString()*/
         }
     }
 }

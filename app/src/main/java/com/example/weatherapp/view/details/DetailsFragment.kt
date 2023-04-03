@@ -8,11 +8,15 @@ import androidx.fragment.app.Fragment
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.example.weatherapp.R
 import com.example.weatherapp.databinding.NewFragmentDetailsBinding
+import com.example.weatherapp.repository.OnServerResponse
 import com.example.weatherapp.repository.Weather
+import com.example.weatherapp.repository.WeatherDTO
+import com.example.weatherapp.repository.WeatherLoader
 import com.example.weatherapp.utils.KEY_BUNDLE_WEATHER
 import java.text.SimpleDateFormat
+import java.util.*
 
-class DetailsFragment : Fragment() {
+class DetailsFragment : Fragment(), OnServerResponse {
 
     private var _binding: NewFragmentDetailsBinding? = null
     private val binding: NewFragmentDetailsBinding get() = _binding!!
@@ -27,9 +31,15 @@ class DetailsFragment : Fragment() {
         return binding.root
     }
 
+    lateinit var currentCityName: String
+
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-        val weather: Weather = requireArguments().getParcelable(KEY_BUNDLE_WEATHER)!!
+        //val weather: Weather = requireArguments().getParcelable(KEY_BUNDLE_WEATHER)!!
+        arguments?.getParcelable<Weather>(KEY_BUNDLE_WEATHER)?.let {
+            currentCityName = it.city.name
+            WeatherLoader(this@DetailsFragment).loadWeather(it.city.lat, it.city.lon)
+        }
         val layoutManager =
             LinearLayoutManager(requireContext(), LinearLayoutManager.HORIZONTAL, false)
 
@@ -37,22 +47,20 @@ class DetailsFragment : Fragment() {
         binding.listWeek.adapter = adapterWeek
         binding.listHour.layoutManager = layoutManager
 
-        renderData(weather)
     }
 
-    private fun renderData(weather: Weather) {
+    private fun renderData(weather: WeatherDTO) {
         with(binding) {
-            cityName.text = weather.city.name
             dataText.text =
-                SimpleDateFormat(getString(R.string.time_format)).format(weather.time)
+                SimpleDateFormat(getString(R.string.time_format), Locale.getDefault()).format(this@DetailsFragment)
             weatherIcon.background = resources.getDrawable(R.drawable.sun)
-            weatherText.text = weather.temperature.toString()
-            conditionText.text = weather.condition
+            weatherText.text = weather.factDTO.temp.toString()
+            conditionText.text = weather.factDTO.condition
             feelsLikeText.text =
-                resources.getString(R.string.feelsLike) + " " + weather.feelsLike.toString()
+                resources.getString(R.string.feelsLike) + " " + weather.factDTO.feelsLike.toString()
         }
-        adapterHour.setWeatherData(weather.forecastList[0].hours)
-        adapterWeek.setForecastData(weather.forecastList)
+        adapterHour.setWeatherData(weather.forecastDTO[0].hours)
+        adapterWeek.setForecastData(weather.forecastDTO)
     }
 
     override fun onDestroy() {
@@ -68,5 +76,9 @@ class DetailsFragment : Fragment() {
             fragment.arguments = bundle
             return fragment
         }
+    }
+
+    override fun onResponse(weatherDTO: WeatherDTO) {
+        renderData(weatherDTO)
     }
 }
