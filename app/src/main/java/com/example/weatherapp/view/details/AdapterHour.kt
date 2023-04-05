@@ -8,7 +8,6 @@ import androidx.recyclerview.widget.RecyclerView
 import com.example.weatherapp.R
 import com.example.weatherapp.databinding.HourItemBinding
 import com.example.weatherapp.repository.Hours
-import java.text.SimpleDateFormat
 
 class AdapterHour : RecyclerView.Adapter<AdapterHour.HolderHour>() {
 
@@ -34,7 +33,8 @@ class AdapterHour : RecyclerView.Adapter<AdapterHour.HolderHour>() {
 
         fun bind(hours: Hours) {
             val binding = HourItemBinding.bind(itemView)
-            binding.hourTime.text = SimpleDateFormat("H:m").format(hours.hour)
+            //binding.hourTime.text = SimpleDateFormat("H:m").format(hours.hour)
+            binding.hourTime.text = hours.hour + ":00"
             binding.hourWeather.text = hours.temp.toString()
             binding.hourIcon.setImageDrawable(
                 ContextCompat.getDrawable(

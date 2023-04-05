@@ -7,7 +7,7 @@ data class WeatherDTO(
     @SerializedName("fact")
     val factDTO: FactDTO,
     @SerializedName("forecast")
-    val forecastDTO: ArrayList<ForecastDTO> = arrayListOf(),
+    val forecastDTO: ForecastDTO,
     @SerializedName("info")
     val infoDTO: InfoDTO,
     @SerializedName("now")

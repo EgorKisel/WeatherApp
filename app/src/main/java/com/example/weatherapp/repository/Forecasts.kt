@@ -1,24 +1,34 @@
 package com.example.weatherapp.repository
 
-import android.os.Parcelable
-import kotlinx.android.parcel.Parcelize
-import java.util.*
-
-@Parcelize
 data class Forecasts(
-    val date: Date = Date(),
-    val tempMin: Int = 10,
-    val tempMax: Int = 15,
-    val hours: List<Hours> = listOf()
-) : Parcelable
+    val date: String,
+    val hours: ArrayList<Hours> = arrayListOf(),
+    val parts: Parts
+)
 
-fun getForecastsList(): List<Forecasts> {
-    return listOf(
-        Forecasts(Date(), Random().nextInt(20)-10, Random().nextInt(20)-5, getHoursList()),
-        Forecasts(Date(), Random().nextInt(20)-10, Random().nextInt(20)-5, getHoursList()),
-        Forecasts(Date(), Random().nextInt(20)-10, Random().nextInt(20)-5, getHoursList()),
-        Forecasts(Date(), Random().nextInt(20)-10, Random().nextInt(20)-5, getHoursList()),
-        Forecasts(Date(), Random().nextInt(20)-10, Random().nextInt(20)-5, getHoursList()),
-        Forecasts(Date(), Random().nextInt(20)-10, Random().nextInt(20)-5, getHoursList()),
-        Forecasts(Date(), Random().nextInt(20)-10, Random().nextInt(20)-5, getHoursList()))
-}
+data class Parts(
+    var evening: Evening,
+    var morning: Morning,
+    var night: Night,
+    var day: Day,
+)
+
+data class Day(
+    val temp_min: Int,
+    val temp_max: Int
+)
+
+data class Night(
+    var temp_min: Int,
+    var temp_max: Int
+)
+
+data class Morning(
+    val temp_min: Int,
+    val temp_max: Int
+)
+
+data class Evening(
+    val temp_min: Int,
+    val temp_max: Int
+)

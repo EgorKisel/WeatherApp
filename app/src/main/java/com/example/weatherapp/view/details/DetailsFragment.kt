@@ -13,7 +13,7 @@ import com.example.weatherapp.repository.Weather
 import com.example.weatherapp.repository.WeatherDTO
 import com.example.weatherapp.repository.WeatherLoader
 import com.example.weatherapp.utils.KEY_BUNDLE_WEATHER
-import java.text.SimpleDateFormat
+import com.example.weatherapp.utils.formatDate
 import java.util.*
 
 class DetailsFragment : Fragment(), OnServerResponse {
@@ -37,7 +37,7 @@ class DetailsFragment : Fragment(), OnServerResponse {
         super.onViewCreated(view, savedInstanceState)
         //val weather: Weather = requireArguments().getParcelable(KEY_BUNDLE_WEATHER)!!
         arguments?.getParcelable<Weather>(KEY_BUNDLE_WEATHER)?.let {
-            currentCityName = it.city.name
+            currentCityName = it.city.cityName
             WeatherLoader(this@DetailsFragment).loadWeather(it.city.lat, it.city.lon)
         }
         val layoutManager =
@@ -51,16 +51,16 @@ class DetailsFragment : Fragment(), OnServerResponse {
 
     private fun renderData(weather: WeatherDTO) {
         with(binding) {
-            dataText.text =
-                SimpleDateFormat(getString(R.string.time_format), Locale.getDefault()).format(this@DetailsFragment)
+            dataText.text = Date().formatDate()
             weatherIcon.background = resources.getDrawable(R.drawable.sun)
             weatherText.text = weather.factDTO.temp.toString()
             conditionText.text = weather.factDTO.condition
             feelsLikeText.text =
                 resources.getString(R.string.feelsLike) + " " + weather.factDTO.feelsLike.toString()
+            cityName.text = currentCityName
         }
-        adapterHour.setWeatherData(weather.forecastDTO[0].hours)
-        adapterWeek.setForecastData(weather.forecastDTO)
+        //adapterHour.setWeatherData(weather.forecastDTO.hours)
+       // adapterWeek.setForecastData(weather.forecastDTO.week)
     }
 
     override fun onDestroy() {
