@@ -2,6 +2,7 @@ package com.example.weatherapp.repository
 
 import android.os.Handler
 import android.os.Looper
+import android.util.Log
 import com.example.weatherapp.BuildConfig
 import com.google.gson.Gson
 import java.io.BufferedReader
@@ -44,9 +45,11 @@ class WeatherLoader(private val onServerResponseListener: OnServerResponse) {
                     onServerResponseListener.onResponse(weatherDTO)
                 }
             } catch (e: Exception) {
-                // "что-то пошло не так" Snackbar?
+                Log.e("", "Fail URL", e)
+                e.printStackTrace()
+            } finally {
+                urlConnection.disconnect()
             }
-            // disconnect() finally?
 
 
         }.start()
