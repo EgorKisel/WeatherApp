@@ -5,7 +5,7 @@ import android.view.View
 import android.view.ViewGroup
 import androidx.recyclerview.widget.RecyclerView
 import com.example.weatherapp.databinding.WeekItemBinding
-import com.example.weatherapp.repository.ForecastDTO
+import com.example.weatherapp.repository.dto.ForecastDTO
 import java.text.SimpleDateFormat
 
 class AdapterWeek: RecyclerView.Adapter<AdapterWeek.HolderWeek>() {

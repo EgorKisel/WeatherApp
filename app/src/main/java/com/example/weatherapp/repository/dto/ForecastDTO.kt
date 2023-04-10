@@ -1,8 +1,12 @@
-package com.example.weatherapp.repository
+package com.example.weatherapp.repository.dto
 
 
+import android.os.Parcelable
+import com.example.weatherapp.repository.Hours
 import com.google.gson.annotations.SerializedName
+import kotlinx.android.parcel.Parcelize
 
+@Parcelize
 data class ForecastDTO(
     @SerializedName("date")
     val date: String,
@@ -20,5 +24,5 @@ data class ForecastDTO(
     val sunset: String,
     @SerializedName("week")
     val week: Int,
-    val hours: ArrayList<Hours> = arrayListOf()
-)
+   // val hours: ArrayList<Hours> = arrayListOf()
+): Parcelable
