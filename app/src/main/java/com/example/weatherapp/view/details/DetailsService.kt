@@ -36,8 +36,12 @@ class DetailsService(name: String = "") : IntentService(name) {
             val responseOk = 200..299
 
             when (responseCode) {
-                in serverSide -> {}
-                in clientSide -> {}
+                in serverSide -> {
+                    Log.d("serverSide", "$responseCode: Error on server side")
+                }
+                in clientSide -> {
+                    Log.d("clientSide", "$responseCode: Error on client side")
+                }
                 in responseOk -> {
                     val buffer = BufferedReader(InputStreamReader(urlConnection.inputStream))
                     val weatherDTO: WeatherDTO = Gson().fromJson(buffer, WeatherDTO::class.java)
@@ -46,7 +50,9 @@ class DetailsService(name: String = "") : IntentService(name) {
                     //sendBroadcast(message)
                     LocalBroadcastManager.getInstance(this).sendBroadcast(message)
                 }
-                else -> {}
+                else -> {
+                    Log.d("@@@", "$responseCode: Error")
+                }
             }
         }
     }
