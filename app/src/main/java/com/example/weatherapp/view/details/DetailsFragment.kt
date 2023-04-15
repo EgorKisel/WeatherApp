@@ -1,43 +1,34 @@
 package com.example.weatherapp.view.details
 
-import android.content.BroadcastReceiver
-import android.content.Context
-import android.content.Intent
-import android.content.IntentFilter
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.ImageView
 import androidx.fragment.app.Fragment
-import androidx.localbroadcastmanager.content.LocalBroadcastManager
+import androidx.lifecycle.ViewModelProvider
 import androidx.recyclerview.widget.LinearLayoutManager
+import coil.ImageLoader
+import coil.decode.SvgDecoder
+import coil.request.ImageRequest
 import com.example.weatherapp.R
 import com.example.weatherapp.databinding.NewFragmentDetailsBinding
-import com.example.weatherapp.repository.OnServerResponse
 import com.example.weatherapp.repository.Weather
-import com.example.weatherapp.repository.dto.WeatherDTO
-import com.example.weatherapp.repository.WeatherLoader
-import com.example.weatherapp.utils.*
+import com.example.weatherapp.utils.KEY_BUNDLE_WEATHER
+import com.example.weatherapp.utils.formatDate
+import com.example.weatherapp.viewmodel.DetailsState
+import com.example.weatherapp.viewmodel.DetailsViewModel
 import java.util.*
 
-class DetailsFragment : Fragment(), OnServerResponse {
+class DetailsFragment : Fragment() {
 
     private var _binding: NewFragmentDetailsBinding? = null
     private val binding: NewFragmentDetailsBinding get() = _binding!!
     private val adapterHour = AdapterHour()
     private val adapterWeek = AdapterWeek()
     lateinit var currentCityName: String
-
-    private val receiver = object : BroadcastReceiver() {
-        override fun onReceive(context: Context?, intent: Intent?) {
-            intent?.let { intent ->
-                intent.getParcelableExtra<WeatherDTO>(KEY_BUNDLE_SERVICE_BROADCAST_WEATHER)
-                    ?.let { weatherDTO ->
-                        onResponse(weatherDTO)
-                    }
-            }
-        }
-
+    private val viewModel: DetailsViewModel by lazy {
+        ViewModelProvider(this)[DetailsViewModel::class.java]
     }
 
     override fun onCreateView(
@@ -50,27 +41,15 @@ class DetailsFragment : Fragment(), OnServerResponse {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-        //val weather: Weather = requireArguments().getParcelable(KEY_BUNDLE_WEATHER)!!
 
-        LocalBroadcastManager.getInstance(requireContext()).registerReceiver(
-            receiver, IntentFilter(
-                KEY_WAVE_SERVICE_BROADCAST
-            )
-        )
+        viewModel.getLivedata().observe(viewLifecycleOwner) {
+            renderData(it)
+        }
 
         arguments?.getParcelable<Weather>(KEY_BUNDLE_WEATHER)?.let {
-            currentCityName = it.city.cityName
-            //WeatherLoader(this@DetailsFragment).loadWeather(it.city.lat, it.city.lon)
-
-            requireActivity().startService(
-                Intent(
-                    requireContext(),
-                    DetailsService::class.java
-                ).apply {
-                    putExtra(KEY_BUNDLE_LAT, it.city.lat)
-                    putExtra(KEY_BUNDLE_LON, it.city.lon)
-                })
+            viewModel.getWeather(it.city)
         }
+
         val layoutManager =
             LinearLayoutManager(requireContext(), LinearLayoutManager.HORIZONTAL, false)
 
@@ -80,24 +59,45 @@ class DetailsFragment : Fragment(), OnServerResponse {
 
     }
 
-    private fun renderData(weather: WeatherDTO) {
-        with(binding) {
-            dataText.text = Date().formatDate()
-            weatherIcon.background = resources.getDrawable(R.drawable.sun)
-            weatherText.text = weather.factDTO.temp.toString()
-            conditionText.text = weather.factDTO.condition
-            feelsLikeText.text =
-                resources.getString(R.string.feelsLike) + " " + weather.factDTO.feelsLike.toString()
-            cityName.text = currentCityName
+    private fun renderData(detailsState: DetailsState) {
+        when (detailsState) {
+            is DetailsState.Error -> {}
+            DetailsState.Loading -> {}
+            is DetailsState.Success -> {
+                val weather = detailsState.weather
+                with(binding) {
+                    dataText.text = Date().formatDate()
+                    weatherIcon.loadSvg("https://yastatic.net/weather/i/icons/funky/dark/${weather.icon}.svg")
+                    //weatherIcon.background = resources.getDrawable(R.drawable.sun)
+                    weatherText.text = weather.temperature.toString()
+                    //conditionText.text = weather.
+                    feelsLikeText.text =
+                        resources.getString(R.string.feelsLike) + " " + weather.feelsLike.toString()
+                    cityName.text = weather.city.cityName
+                }
+                //adapterHour.setWeatherData(weather.forecastDTO.hours)
+                // adapterWeek.setForecastData(weather.forecastDTO.week)
+            }
         }
-        //adapterHour.setWeatherData(weather.forecastDTO.hours)
-        // adapterWeek.setForecastData(weather.forecastDTO.week)
+
+    }
+
+    private fun ImageView.loadSvg(url: String) {
+        val imageLoader =
+            ImageLoader.Builder(this.context).components { add(SvgDecoder.Factory()) }
+                .build()
+        val request = ImageRequest.Builder(this.context)
+            .crossfade(true)
+            .crossfade(500)
+            .data(url)
+            .target(this)
+            .build()
+        imageLoader.enqueue(request)
     }
 
     override fun onDestroy() {
         super.onDestroy()
         _binding = null
-        LocalBroadcastManager.getInstance(requireContext()).unregisterReceiver(receiver)
     }
 
     companion object {
@@ -108,9 +108,5 @@ class DetailsFragment : Fragment(), OnServerResponse {
             fragment.arguments = bundle
             return fragment
         }
-    }
-
-    override fun onResponse(weatherDTO: WeatherDTO) {
-        renderData(weatherDTO)
     }
 }

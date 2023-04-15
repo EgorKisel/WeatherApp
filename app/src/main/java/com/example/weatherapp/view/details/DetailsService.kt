@@ -20,7 +20,7 @@ class DetailsService(name: String = "") : IntentService(name) {
             val lat = it.getDoubleExtra(KEY_BUNDLE_LAT, 0.0)
             val lon = it.getDoubleExtra(KEY_BUNDLE_LON, 0.0)
 
-            val urlText = "$YANDEX_DOMAIN${YANDEX_PATH}lat=$lat&lon=$lon"
+            val urlText = "$YANDEX_DOMAIN${YANDEX_ENDPOINT}lat=$lat&lon=$lon"
             val uri = URL(urlText)
             val urlConnection: HttpsURLConnection =
                 (uri.openConnection() as HttpsURLConnection).apply {

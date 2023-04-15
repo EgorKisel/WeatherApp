@@ -6,7 +6,10 @@ import java.util.*
 
 @Parcelize
 data class Weather(
-    val city: City = City(), val temperature: Int = 10
+    var city: City = getDefaultCity(),
+    val temperature: Int = 0,
+    val feelsLike: Int = 0,
+    val icon: String = "bkn_n"
 ) : Parcelable
 
 @Parcelize
