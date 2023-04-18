@@ -11,10 +11,11 @@ import androidx.recyclerview.widget.LinearLayoutManager
 import coil.ImageLoader
 import coil.decode.SvgDecoder
 import coil.request.ImageRequest
-import com.example.weatherapp.R
 import com.example.weatherapp.databinding.NewFragmentDetailsBinding
 import com.example.weatherapp.repository.Weather
+import com.example.weatherapp.repository.dto.WeatherDTO
 import com.example.weatherapp.utils.KEY_BUNDLE_WEATHER
+import com.example.weatherapp.utils.addDegree
 import com.example.weatherapp.utils.formatDate
 import com.example.weatherapp.viewmodel.DetailsState
 import com.example.weatherapp.viewmodel.DetailsViewModel
@@ -27,6 +28,7 @@ class DetailsFragment : Fragment() {
     private val adapterHour = AdapterHour()
     private val adapterWeek = AdapterWeek()
     lateinit var currentCityName: String
+    private lateinit var weatherBundle: Weather
     private val viewModel: DetailsViewModel by lazy {
         ViewModelProvider(this)[DetailsViewModel::class.java]
     }
@@ -50,6 +52,8 @@ class DetailsFragment : Fragment() {
             viewModel.getWeather(it.city)
         }
 
+        weatherBundle = arguments?.getParcelable(KEY_BUNDLE_WEATHER) ?: Weather()
+
         val layoutManager =
             LinearLayoutManager(requireContext(), LinearLayoutManager.HORIZONTAL, false)
 
@@ -64,22 +68,31 @@ class DetailsFragment : Fragment() {
             is DetailsState.Error -> {}
             DetailsState.Loading -> {}
             is DetailsState.Success -> {
-                val weather = detailsState.weather
-                with(binding) {
-                    dataText.text = Date().formatDate()
-                    weatherIcon.loadSvg("https://yastatic.net/weather/i/icons/funky/dark/${weather.icon}.svg")
-                    //weatherIcon.background = resources.getDrawable(R.drawable.sun)
-                    weatherText.text = weather.temperature.toString()
-                    //conditionText.text = weather.
-                    feelsLikeText.text =
-                        resources.getString(R.string.feelsLike) + " " + weather.feelsLike.toString()
-                    cityName.text = weather.city.cityName
-                }
-                //adapterHour.setWeatherData(weather.forecastDTO.hours)
-                // adapterWeek.setForecastData(weather.forecastDTO.week)
+                setWeather(detailsState.weatherDTO)
+                binding.weatherIcon.loadSvg("https://yastatic.net/weather/i/icons/funky/dark/${detailsState.weatherDTO.factDTO.icon}.svg")
             }
         }
 
+    }
+
+    private fun setWeather(weatherDTO: WeatherDTO) {
+        with(binding)
+        {
+            weatherDTO.factDTO?.apply {
+                cityName.text = weatherBundle.city.cityName
+                feelsLikeText.text = feelsLike.toString().addDegree()
+                conditionText.text = condition
+                weatherText.text = temp.toString().addDegree()
+                dataText.text = Date().formatDate()
+                weatherIcon.loadSvg(icon!!)
+                windSpeed2.text = "$windSpeed м/с"
+                PressureMm.text = "$pressureMm мм рт"
+                Humidity.text = "$humidity%"
+                Season.text = season
+                sunrise.text = weatherDTO.forecastDTO.sunrise
+                sunset.text = weatherDTO.forecastDTO.sunset
+            }
+        }
     }
 
     private fun ImageView.loadSvg(url: String) {

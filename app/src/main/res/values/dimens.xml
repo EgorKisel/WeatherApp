@@ -10,4 +10,5 @@
     <dimen name="margin_base">20dp</dimen>
     <dimen name="margin_card_view">10dp</dimen>
     <dimen name="radius_card_view">10dp</dimen>
+    <dimen name="text_size_info">20sp</dimen>
 </resources>

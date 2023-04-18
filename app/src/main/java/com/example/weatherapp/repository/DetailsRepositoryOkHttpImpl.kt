@@ -26,7 +26,7 @@ class DetailsRepositoryOkHttpImpl : DetailsRepository {
                 val weatherDTO: WeatherDTO = Gson().fromJson(serverResponse, WeatherDTO::class.java)
                 val weather = convertDtoToModel(weatherDTO)
                 weather.city = city
-                callback.onResponse(weather)
+                callback.onResponse(weatherDTO)
             } else {
                 //
             }

@@ -28,7 +28,7 @@ class DetailsRepositoryRetrofit2Impl : DetailsRepository {
                         response.body()?.let {
                             val weather = convertDtoToModel(it)
                             weather.city = city
-                            callbackMy.onResponse(weather)
+                            callbackMy.onResponse(it)
                         }
                     } else {
                         callbackMy.onFail()

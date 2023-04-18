@@ -127,6 +127,141 @@
 
         </androidx.cardview.widget.CardView>
 
+        <androidx.cardview.widget.CardView
+            android:id="@+id/card_view_description"
+            style="@style/card_style_base">
+
+            <LinearLayout
+                android:id="@+id/liner_description"
+                style="@style/liner_layout_default"
+                android:layout_height="match_parent"
+                android:layout_margin="5dp">
+
+                <LinearLayout
+                    style="@style/liner_layout_default"
+                    android:orientation="horizontal">
+
+                    <ImageView
+                        style="@style/add_card_view_icon_size"
+                        android:src="@drawable/sunrise" />
+
+                    <TextView
+                        style="@style/add_card_view_text"
+                        android:text="@string/Sunrise" />
+
+                    <TextView
+                        android:id="@+id/sunrise"
+                        style="@style/add_card_view_info" />
+                </LinearLayout>
+
+                <View style="@style/separator_view" />
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="horizontal">
+
+                    <ImageView
+                        style="@style/add_card_view_icon_size"
+
+                        android:src="@drawable/sunset2" />
+
+                    <TextView
+                        style="@style/add_card_view_text"
+                        android:text="@string/Sunset" />
+
+                    <TextView
+                        android:id="@+id/sunset"
+                        style="@style/add_card_view_info" />
+                </LinearLayout>
+
+                <View style="@style/separator_view" />
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="horizontal">
+
+                    <ImageView
+                        style="@style/add_card_view_icon_size"
+
+                        android:padding="5dp"
+                        android:src="@drawable/wind" />
+
+                    <TextView
+                        style="@style/add_card_view_text"
+                        android:text="@string/wind" />
+
+                    <TextView
+                        android:id="@+id/wind_Speed2"
+                        style="@style/add_card_view_info" />
+                </LinearLayout>
+
+                <View style="@style/separator_view" />
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="horizontal">
+
+                    <ImageView
+                        style="@style/add_card_view_icon_size"
+                        android:src="@drawable/humdity_custom" />
+
+                    <TextView
+                        style="@style/add_card_view_text"
+                        android:text="@string/Pressure" />
+
+                    <TextView
+                        android:id="@+id/Pressure_mm"
+                        style="@style/add_card_view_info" />
+                </LinearLayout>
+
+                <View style="@style/separator_view" />
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="horizontal">
+
+                    <ImageView
+                        style="@style/add_card_view_icon_size"
+                        android:src="@drawable/pressure" />
+
+                    <TextView
+                        style="@style/add_card_view_text"
+                        android:text="@string/Humidity" />
+
+                    <TextView
+                        android:id="@+id/Humidity"
+                        style="@style/add_card_view_info" />
+                </LinearLayout>
+
+                <View style="@style/separator_view" />
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="horizontal">
+
+                    <ImageView
+                        style="@style/add_card_view_icon_size"
+                        android:padding="5dp"
+                        android:src="@drawable/season" />
+
+                    <TextView
+                        style="@style/add_card_view_text"
+                        android:text="@string/Season" />
+
+                    <TextView
+                        android:id="@+id/Season"
+                        style="@style/add_card_view_info" />
+                </LinearLayout>
+
+                <View style="@style/separator_view" />
+            </LinearLayout>
+        </androidx.cardview.widget.CardView>
+
     </LinearLayout>
 
 </androidx.core.widget.NestedScrollView>

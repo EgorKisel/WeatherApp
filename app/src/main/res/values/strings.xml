@@ -9,4 +9,10 @@
     <string name="reload">Reload</string>
     <string name="time_format">"E, dd MMMM H:m"</string>
     <string name="feelsLike">feels like </string>
+    <string name="Sunrise">Sunrise</string>
+    <string name="Sunset">Sunset</string>
+    <string name="wind">Wind</string>
+    <string name="Pressure">Pressure</string>
+    <string name="Humidity">Humidity</string>
+    <string name="Season">Season</string>
 </resources>
