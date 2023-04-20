@@ -1,5 +1,6 @@
 package com.example.weatherapp.view.weatherlist
 
+import android.content.Context
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
@@ -40,9 +41,18 @@ class WeatherListFragment : Fragment(), OnItemListClickListener {
         super.onViewCreated(view, savedInstanceState)
         val observer = Observer<AppState> { data -> renderData(data) }
         binding.recyclerView.adapter = adapter
+
+        activity?.let {
+            isRussian = it.getPreferences(Context.MODE_PRIVATE).getBoolean(Companion.IS_WORLD_KEY, true)
+        }
+
         viewModel.apply {
             getData().observe(viewLifecycleOwner, observer)
-            getWeatherRussia()
+            if (isRussian) {
+                getWeatherRussia()
+            } else {
+                getWeatherWorld()
+            }
         }
         binding.floatingActionButton.setOnClickListener {
             changeWeatherData()
@@ -50,23 +60,30 @@ class WeatherListFragment : Fragment(), OnItemListClickListener {
     }
 
     private fun changeWeatherData() {
-        isRussian = !isRussian
-        if (isRussian) {
-            viewModel.getWeatherRussia()
-            binding.floatingActionButton.setImageDrawable(
-                ContextCompat.getDrawable(
-                    requireContext(),
-                    R.drawable.ic_russia
+        viewModel.apply {
+            if (!isRussian) {
+                getWeatherRussia()
+                binding.floatingActionButton.setImageDrawable(
+                    ContextCompat.getDrawable(
+                        requireContext(),
+                        R.drawable.ic_russia
+                    )
                 )
-            )
-        } else {
-            viewModel.getWeatherWorld()
-            binding.floatingActionButton.setImageDrawable(
-                ContextCompat.getDrawable(
-                    requireContext(),
-                    R.drawable.ic_earth
+            } else {
+                getWeatherWorld()
+                binding.floatingActionButton.setImageDrawable(
+                    ContextCompat.getDrawable(
+                        requireContext(),
+                        R.drawable.ic_earth
+                    )
                 )
-            )
+            }
+        }.also {
+            isRussian = !isRussian
+            activity?.let {
+                it.getPreferences(Context.MODE_PRIVATE).edit().putBoolean(Companion.IS_WORLD_KEY, isRussian)
+                    .apply()
+            }
         }
     }
 
@@ -96,6 +113,7 @@ class WeatherListFragment : Fragment(), OnItemListClickListener {
 
         @JvmStatic
         fun newInstance() = WeatherListFragment()
+        const val IS_WORLD_KEY = "list_of_towns_key"
     }
 
     override fun onItemClick(weather: Weather) {
