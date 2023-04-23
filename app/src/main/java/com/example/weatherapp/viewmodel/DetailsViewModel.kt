@@ -2,12 +2,14 @@ package com.example.weatherapp.viewmodel
 
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
+import com.example.weatherapp.MyApp.Companion.getHistoryDao
 import com.example.weatherapp.repository.*
 import com.example.weatherapp.repository.dto.WeatherDTO
 
 class DetailsViewModel(
     private val liveData: MutableLiveData<DetailsState> = MutableLiveData(),
-    private val repository: DetailsRepository = DetailsRepositoryRetrofit2Impl()
+    private val repository: DetailsRepositoryOne = DetailsRepositoryOneRetrofit2Impl(),
+    private val historyRepo: LocalRepository = LocalRepositoryRoomImpl(getHistoryDao())
 ) : ViewModel() {
 
     fun getLivedata() = liveData
@@ -25,6 +27,12 @@ class DetailsViewModel(
             }
 
         })
+    }
+
+    fun saveCityToDB(weather: Weather) {
+        Thread {
+            historyRepo.saveEntity(weather)
+        }.start()
     }
 
     interface Callback {

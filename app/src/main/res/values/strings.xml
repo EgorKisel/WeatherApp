@@ -15,4 +15,5 @@
     <string name="Pressure">Pressure</string>
     <string name="Humidity">Humidity</string>
     <string name="Season">Season</string>
+    <string name="menu_title_history">History</string>
 </resources>

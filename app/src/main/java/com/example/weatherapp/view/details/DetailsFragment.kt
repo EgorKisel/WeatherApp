@@ -12,11 +12,10 @@ import coil.ImageLoader
 import coil.decode.SvgDecoder
 import coil.request.ImageRequest
 import com.example.weatherapp.databinding.NewFragmentDetailsBinding
+import com.example.weatherapp.repository.City
 import com.example.weatherapp.repository.Weather
 import com.example.weatherapp.repository.dto.WeatherDTO
-import com.example.weatherapp.utils.KEY_BUNDLE_WEATHER
-import com.example.weatherapp.utils.addDegree
-import com.example.weatherapp.utils.formatDate
+import com.example.weatherapp.utils.*
 import com.example.weatherapp.viewmodel.DetailsState
 import com.example.weatherapp.viewmodel.DetailsViewModel
 import java.util.*
@@ -76,10 +75,12 @@ class DetailsFragment : Fragment() {
     }
 
     private fun setWeather(weatherDTO: WeatherDTO) {
+        val city = weatherBundle.city
+        saveCity(city, factToWeather(weatherDTO.factDTO))
         with(binding)
         {
             weatherDTO.factDTO?.apply {
-                cityName.text = weatherBundle.city.cityName
+                cityName.text = city.cityName
                 feelsLikeText.text = feelsLike.toString().addDegree()
                 conditionText.text = condition
                 weatherText.text = temp.toString().addDegree()
@@ -92,6 +93,12 @@ class DetailsFragment : Fragment() {
                 sunrise.text = weatherDTO.forecastDTO.sunrise
                 sunset.text = weatherDTO.forecastDTO.sunset
             }
+        }
+    }
+
+    private fun saveCity(city: City, weather: Weather) {
+        with(weather) {
+            viewModel.saveCityToDB(Weather(city, temperature, feelsLike, icon))
         }
     }
 
